@@ -1,0 +1,22 @@
+services:
+  - docker
+
+before-install:
+  - docker build -t leux1/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run CI=true leux1/react-test npm test 
+
+after_succes:
+  - docker build -t leux1/multi-client ./client
+  - docker build -t leux1/multi-nginx ./nginx
+  - docker build -t leux1/multi-server ./server
+  - docker build -t leux1/multi-worker ./worker
+  # Log in to socker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Take those images and push them to docker hub
+  - docker push leux1/multi-client
+  - docker push leux1/multi-nginx
+  - docker push leux1/multi-server
+  - docker push leux1/multi-worker
