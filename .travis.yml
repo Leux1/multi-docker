@@ -2,7 +2,7 @@ services:
   - docker
 
 before-install:
-  - docker build -t leux1/testreact -f /client/Dockerfile.dev /client
+  - docker build -t leux1/testreact . -f ./client/Dockerfile.dev ./client
 script:
   - docker run CI=true leux1/testreact npm run test 
 
